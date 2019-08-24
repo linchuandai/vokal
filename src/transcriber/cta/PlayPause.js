@@ -31,7 +31,7 @@ export default class IconLabelButtons extends Component {
         return (
             <div>
                 <Button variant="contained" color="default" onClick={ this.props.PlayPauseClick }>
-                <KeyboardVoiceIcon className="leftIcon" />Play
+                <KeyboardVoiceIcon className="leftIcon" />Play/Pause
                 </Button>
 
             </div>

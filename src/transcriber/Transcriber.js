@@ -86,13 +86,14 @@ export default class Transcriber extends Component {
                 // update the textarea with the latest result
                 transcribedText = transcribedText + transcript + "\n";
                 console.log(transcribedText)
+                this.setState({ start: true, transcribedText })
     
                 // if this transcript segment is final, add it to the overall transcription
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
     
                     transcribedText += transcript + "\n";
-
+                    
                 }
             }
         }
@@ -111,8 +112,6 @@ export default class Transcriber extends Component {
                 transcribeException = true;
             }
         };
-
-        this.setState({ start: this.state.start, transcribedText: transcribedText });
 
         socket.onerror = function () {
             socketError = true;
@@ -230,7 +229,6 @@ export default class Transcriber extends Component {
     ResetClick() {
         transcribedText = ""
         this.setState( { start: this.state.start, transcribedText: transcribedText } )
-
     }
 
 
@@ -238,7 +236,7 @@ export default class Transcriber extends Component {
         return(
             <div className="Transcriber">
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
-                <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.Reset }/></div>
+                <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
                 <div><Statistics start={ this.state.start }/></div>
                 <div><TextandFeedback transcribedText={ this.state.transcribedText }/></div>
             </div>
