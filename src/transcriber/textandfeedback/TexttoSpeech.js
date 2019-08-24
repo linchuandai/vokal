@@ -12,7 +12,7 @@ class TexttoSpeech extends Component {
 
     componentDidUpdate(prevProps) {
         try {
-            if (this.props.transcribedText != this.prevProps.transcribedText ) {
+            if (this.props.transcribedText != this.state.transcribedText ) {
                 this.setState({ transcribedText: this.props.transcribedText })
             }    
         } catch(error) {

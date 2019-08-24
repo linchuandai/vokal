@@ -10,9 +10,6 @@ class Feedback extends Component {
         return (
             <div>
                 <FeedbackCard />
-                <FeedbackCard />
-                <FeedbackCard />
-                <FeedbackCard />
             </div>
         );
     }

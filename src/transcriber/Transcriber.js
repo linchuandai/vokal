@@ -82,12 +82,11 @@ export default class Transcriber extends Component {
     
                 // update the textarea with the latest result
                 this.state.transcribedText = this.state.transcribedText + transcript + "\n";
-                console.log(this.state.transcribedText)
+                // console.log(this.state.transcribedText)
     
                 // if this transcript segment is final, add it to the overall transcription
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
-                    // transcript.scrollTop(transcript[0].scrollHeight);
     
                     this.state.transcribedText += transcript + "\n";
                     console.log(this.state.transcribedText)
@@ -149,8 +148,6 @@ export default class Transcriber extends Component {
                 //let binary = convertAudioToBinaryMessage(rawAudioChunk);
                 let raw = mic.toRaw(rawAudioChunk);
 
-                console.dir(this);
-
                 // downsample and convert the raw audio bytes to PCM
                 let downsampledBuffer = audioUtils.downsampleBuffer(raw, sampleRate);
                 let pcmEncodedBuffer = audioUtils.pcmEncode(downsampledBuffer);
@@ -161,9 +158,12 @@ export default class Transcriber extends Component {
                 //convert the JSON object + headers into a binary event stream message
                 let binary = eventStreamMarshaller.marshall(audioEventMessage);
     
-                if (socket.OPEN) {
+                try {
                     socket.send(binary);
-                } else {
+                } catch(error) {
+                    socket.close();
+                }
+                if (!socket.OPEN) {
                     socket.close();
                 }
             }
@@ -182,7 +182,7 @@ export default class Transcriber extends Component {
             }
             else {
                 transcribeException = true;
-                console.log(messageBody.Message);
+                // console.log(messageBody.Message);
             }
         };
 
