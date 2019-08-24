@@ -1,0 +1,13 @@
+.CTA {
+    display: flex;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+
+}
+
+.button {
+    border: 1px solid black;
+    width: 125px;
+    margin-right: 15px;
+}

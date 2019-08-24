@@ -1,0 +1,7 @@
+.StatisticsBox {
+    margin-left: 10px;
+    height: 100px;
+    width: 200px;
+    border-radius: 15px;
+    border: 1px solid grey;
+}

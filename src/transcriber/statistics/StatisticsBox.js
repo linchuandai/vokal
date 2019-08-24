@@ -11,7 +11,9 @@ class StatisticsBox extends Component {
 
     render() {
         return (
-            <h2>StatisticsBox</h2>
+            <div class="StatisticsBox">
+                <h2>StatisticsBox</h2>
+            </div>
         );
     }
 
