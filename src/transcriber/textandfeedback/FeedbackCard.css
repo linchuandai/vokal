@@ -1,0 +1,16 @@
+.FeedbackCard {
+    border-bottom: 1px solid lightgrey;
+    width: 90%;
+    height: 70px;
+    margin-left: 15px;
+    margin-bottom: 5px;
+}
+
+.Test {
+    border-bottom: 1px solid lightgrey;
+    background-color: aqua;
+    width: 90%;
+    height: 70px;
+    margin-left: 15px;
+    margin-bottom: 5px;
+}

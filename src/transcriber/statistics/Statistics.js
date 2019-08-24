@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import StatisticsBox from './StatisticsBox';
 import "./Statistics.css";
 
-
 class Statistics extends Component {
     constructor(props) {
         super(props);
@@ -13,16 +12,22 @@ class Statistics extends Component {
             fillerWords: 3
         };
 
-        this.timer = setInterval(() => this.setState({
-            time: this.state.time + 1
-        }), 10)
+        if (this.props.start) {
+            this.timer = setInterval(() => this.setState({
+                time: this.state.time + 1
+            }), 1)
+        }
     }
 
     render() {
-        const titles = ["Timer", "Word Count", "Words per Minute", "Filler World Count", "Sound Level"]
+        const titles = ["Timer", "Word Count", "Words per Minute", "Filler World Count", "Sound Level"];
 
-        const items = []
-        var data = [this.state.time, this.state.totalWords, Math.round(this.state.totalWords/(this.state.time/3600)), this.state.fillerWords, 16]
+        const items = [];
+
+        const timeInSeconds = Math.round(this.state.time/400);
+        const wordsPerMinute = Math.round(this.state.totalWords/(this.state.time/2400));
+
+        var data = [timeInSeconds, this.state.totalWords, wordsPerMinute, this.state.fillerWords, 16]
 
         for (const [index, value] of titles.entries()) {
           items.push(<StatisticsBox title={ value } data={ data[index] } />)

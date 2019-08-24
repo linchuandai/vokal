@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-var transcribedText = "This is the component for transcribed text. Yes it is";
+var transcribedText = "This is the component for transcribed text. Yes it is This is the component for transcribed text. Yesx";
 
 class TexttoSpeech extends Component {
 
@@ -15,7 +15,6 @@ class TexttoSpeech extends Component {
     render() {
         return (
             <p>{ this.state.transcribedText }</p>
-
         );
     }
 }
