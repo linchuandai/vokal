@@ -5,10 +5,14 @@ import Upload from "./Upload";
 import "./CTA.css"
 
 class CTA extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <div className="CTA">
-                <PlayPause />
+                <PlayPause PlayPauseClick={ this.props.PlayPauseClick }/>
                 <Reset />
                 <Upload />
             </div>

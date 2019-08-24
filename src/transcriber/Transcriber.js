@@ -12,15 +12,21 @@ export default class Transcriber extends Component {
         super(props);
 
         this.state = {
-            start: true
+            start: false
         };
+
+        this.PlayPauseClick = this.PlayPauseClick.bind(this);
+    }
+
+    PlayPauseClick() {
+        this.setState( { start: !this.state.start } )
     }
 
     render() {
         return(
             <div className="Transcriber">
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
-                <div><CTA /></div>
+                <div><CTA PlayPauseClick={ this.PlayPauseClick }/></div>
                 <div><Statistics start={ this.state.start }/></div>
                 <div><TextandFeedback /></div>
             </div>

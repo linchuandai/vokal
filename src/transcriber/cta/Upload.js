@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
 import "./CTA.css"
+import Button from '@material-ui/core/Button';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-export default class Upload extends Component {
+export default class IconLabelButtons extends Component {
+
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
-            <div className="button">Upload</div>
-        )
-    };
+            <div>
+                <Button variant="contained" color="default" className="buttons">
+                    Upload
+                <CloudUploadIcon className="rightIcon" />
+                </Button>
+            </div>
+        );        
+    }
 }
