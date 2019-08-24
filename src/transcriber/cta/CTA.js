@@ -12,9 +12,15 @@ class CTA extends Component {
     render() {
         return (
             <div className="CTA">
+                <div className="button">
                 <PlayPause PlayPauseClick={ this.props.PlayPauseClick }/>
+                </div>
+                <div className="button">
                 <Reset />
+                </div>
+                <div className="button">
                 <Upload />
+                </div>
             </div>
         );
     }
