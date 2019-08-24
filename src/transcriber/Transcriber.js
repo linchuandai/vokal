@@ -22,6 +22,8 @@ let micStream;
 let socketError = false;
 let transcribeException = false;
 
+const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah']
+
 // functions to do the CTAs and AWS API calls 
 
 export default class Transcriber extends Component {
@@ -35,6 +37,22 @@ export default class Transcriber extends Component {
         };
         
         this.PlayPauseClick = this.PlayPauseClick.bind(this);
+    }
+
+    // to find the filler words in our text
+    // pass messagebody here 
+    getMatches(searchStr, str) {
+        var ind = 0, searchStrL = searchStr.length;
+        var index, matches = [];
+    
+        str = str.toLowerCase();
+        searchStr = searchStr.toLowerCase();
+    
+        while ((index = str.indexOf(searchStr, ind)) > -1) {
+             matches.push(index);
+             ind = index + searchStrL;
+        }
+        return matches;
     }
 
     getAudioEventMessage(buffer) {
@@ -102,6 +120,7 @@ export default class Transcriber extends Component {
             //convert the binary event stream message to JSON
             let messageWrapper = eventStreamMarshaller.unmarshall(Buffer(message.data));
             let messageBody = JSON.parse(String.fromCharCode.apply(String, messageWrapper.body));
+            console.log(messageBody)
             if (messageWrapper.headers[":message-type"].value === "event") {
                 this.handleEventStreamMessage(messageBody);
             }
