@@ -23,6 +23,7 @@ let socketError = false;
 let transcribeException = false;
 
 const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah']
+var transcribedText = "";
 
 // functions to do the CTAs and AWS API calls 
 
@@ -37,6 +38,7 @@ export default class Transcriber extends Component {
         };
         
         this.PlayPauseClick = this.PlayPauseClick.bind(this);
+        this.ResetClick = this.ResetClick.bind(this);
     }
 
     // to find the filler words in our text
@@ -99,15 +101,14 @@ export default class Transcriber extends Component {
                 transcript = decodeURIComponent(escape(transcript));
     
                 // update the textarea with the latest result
-                this.state.transcribedText = this.state.transcribedText + transcript + "\n";
-                // console.log(this.state.transcribedText)
+                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n" })
     
                 // if this transcript segment is final, add it to the overall transcription
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
     
-                    this.state.transcribedText += transcript + "\n";
-                    console.log(this.state.transcribedText)
+                    transcribedText += transcript + "\n";
+                    console.log(transcribedText)
 
                 }
             }
@@ -128,7 +129,7 @@ export default class Transcriber extends Component {
                 transcribeException = true;
             }
         };
-    
+
         socket.onerror = function () {
             socketError = true;
         };
@@ -182,9 +183,6 @@ export default class Transcriber extends Component {
                 } catch(error) {
                     socket.close();
                 }
-                if (!socket.OPEN) {
-                    socket.close();
-                }
             }
         )};
         
@@ -228,15 +226,34 @@ export default class Transcriber extends Component {
     }
 
     PlayPauseClick() {
-        this.setState( { start: !this.state.start } )
-        this.startGettingTranscription();
+        if (this.state.start == false) {
+            this.setState( { start: true, transcribedText: transcribedText } )
+            this.startGettingTranscription();
+        } else {
+            this.setState( { start: false, transcribedText: transcribedText } )
+
+            if (socket.OPEN) {
+                micStream.stop();
+        
+                // Send an empty frame so that Transcribe initiates a closure of the WebSocket after submitting all transcripts
+                let emptyMessage = this.getAudioEventMessage(Buffer.from(new Buffer([])));
+                let emptyBuffer = eventStreamMarshaller.marshall(emptyMessage);
+                socket.send(emptyBuffer);
+            }        
+        }
     }
+
+    ResetClick() {
+        transcribedText = ""
+        this.setState( { start: this.state.start, transcribedText: transcribedText } )
+    }
+
 
     render() {
         return(
             <div className="Transcriber">
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
-                <div><CTA PlayPauseClick={ this.PlayPauseClick }/></div>
+                <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
                 <div><Statistics start={ this.state.start }/></div>
                 <div><TextandFeedback transcribedText={ this.state.transcribedText }/></div>
             </div>
