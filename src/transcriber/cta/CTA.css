@@ -3,14 +3,11 @@
 
 }
 
-.rightIcon {
-    margin-left: 5px;
-}
-
 .leftIcon {
-    margin-left: 5px;
+    margin-right: 10%;
 }
 
 .button {
     margin-right: 20px;
+    margin-top: 1%;
 }

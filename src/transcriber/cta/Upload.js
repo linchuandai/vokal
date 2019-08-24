@@ -13,8 +13,8 @@ export default class IconLabelButtons extends Component {
         return (
             <div>
                 <Button variant="contained" color="default">
-                    Upload
-                <CloudUploadIcon className="rightIcon" />
+                <CloudUploadIcon className="leftIcon" />
+                Upload
                 </Button>
             </div>
         );        
