@@ -1,0 +1,28 @@
+.TextandFeedback {
+    /*border: 6px solid green;*/
+    height: 100%;
+    display: flex;
+}
+
+.TexttoSpeech {
+    width: 65%;
+    height: 100%;
+    margin-left: 10px;
+    border: 1px solid black;
+
+}
+
+.Feedback {
+    width: 35%;
+    height: 100%;
+    margin-left: 20px;
+    margin-right: 10px;
+    border: 1px solid black;
+}
+  
+.TextandFeedback:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
