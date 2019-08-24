@@ -12,7 +12,7 @@ export default class IconLabelButtons extends Component {
     render() {
         return (
             <div>
-                <Button variant="contained" color="default" className="buttons">
+                <Button variant="contained" color="default" className="button">
                     Upload
                 <CloudUploadIcon className="rightIcon" />
                 </Button>

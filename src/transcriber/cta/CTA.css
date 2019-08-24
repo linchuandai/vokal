@@ -3,16 +3,15 @@
 
 }
 
-
 .rightIcon {
     margin-left: 10px;
 }
 
 .leftIcon {
     margin-right: 10px;
+}
 
 .button {
-    border: 1px solid black;
-    text-align: center;
-    width: 125px;
+    margin-right: 25px;
+    margin-left: 25px;
 }
