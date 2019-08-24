@@ -16,7 +16,7 @@ class CTA extends Component {
                 <PlayPause PlayPauseClick={ this.props.PlayPauseClick }/>
                 </div>
                 <div className="button">
-                <Reset />
+                <Reset ResetClick={ this.props.ResetClick }/>
                 </div>
                 <div className="button">
                 <Upload />
