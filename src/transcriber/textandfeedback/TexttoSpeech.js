@@ -14,7 +14,7 @@ class TexttoSpeech extends Component {
 
     render() {
         return (
-            <h2>{ this.state.transcribedText }</h2>
+            <p>{ this.state.transcribedText }</p>
 
         );
     }

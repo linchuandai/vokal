@@ -1,7 +1,21 @@
 .StatisticsBox {
-    margin-left: 10px;
-    height: 100px;
-    width: 200px;
+    height: 75px;
+    width: 150px;
+    margin-right: 25px;
     border-radius: 15px;
-    border: 1px solid grey;
+    border: 1px solid lightgrey;
+}
+
+.StatisticsTitle {
+    font-weight: 600;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.StatisticsData {
+    font-weight: 600;
+    font-size: 26px;
+    margin-top: 10px;
+    margin-left: 15px;
 }

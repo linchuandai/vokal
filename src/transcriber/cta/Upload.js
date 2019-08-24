@@ -4,7 +4,7 @@ import "./CTA.css"
 export default class Upload extends Component {
     render() {
         return (
-            <div className="button">upload</div>
+            <div className="button">Upload</div>
         )
     };
 }

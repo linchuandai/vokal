@@ -1,0 +1,13 @@
+
+.Transcriber {
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 20px;
+    /*border: 1px solid black;*/
+}
+
+.PresentationTitle {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 15px;
+}

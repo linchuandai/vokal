@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import PropTypes from 'prop-types';
 import "./StatisticsBox.css";
 
 class StatisticsBox extends Component {
 
     constructor(props) {
-        super();
+        super(props);
     }
 
 
     render() {
         return (
             <div class="StatisticsBox">
-                <h2>StatisticsBox</h2>
+                <div class="StatisticsTitle">{ this.props.title }</div>
+                <div class="StatisticsData">{ this.props.data }</div>
             </div>
         );
     }
