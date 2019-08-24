@@ -5,20 +5,21 @@
 
 .TexttoSpeech {
     width: 65%;
-    height: 100%;
+    height: 80%;
     border-radius: 15px;
     overflow-y: auto;
     border: 1px solid lightgrey;
-
+    padding: 1%;
 }
 
 .Feedback {
     width: 35%;
-    height: 100%;
-    margin-left: 30px;
+    height: 80%;
+    margin-left: 15px;
     border-radius: 15px;
     overflow-y: auto;
     border: 1px solid lightgrey;
+    padding: 1%;
 }
   
 .TextandFeedback:after {
@@ -29,8 +30,6 @@
   
 .HeaderText {
     font-weight: 600;
-    font-size: 13px;
+    font-size: 16px;
     margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 15px;
 }

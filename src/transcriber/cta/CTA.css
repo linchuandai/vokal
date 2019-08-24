@@ -1,8 +1,5 @@
 .CTA {
     display: flex;
-    margin-right: 15px;
-    margin-bottom: 15px;
-    margin-top: 15px;
 
 }
 
@@ -13,4 +10,9 @@
 
 .leftIcon {
     margin-right: 10px;
+
+.button {
+    border: 1px solid black;
+    text-align: center;
+    width: 125px;
 }
