@@ -21,6 +21,7 @@ let socket;
 let micStream;
 let socketError = false;
 let transcribeException = false;
+var numFillerWords = 0;
 
 const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah']
 var transcribedText = "";
@@ -90,6 +91,10 @@ export default class Transcriber extends Component {
         return binary;
     }
 
+    WordCount(str) { 
+        return str.split(" ").length;
+      }
+
     handleEventStreamMessage(messageJson) {
         let results = messageJson.Transcript.Results;
     
@@ -106,10 +111,9 @@ export default class Transcriber extends Component {
                 // if this transcript segment is final, add it to the overall transcription
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
-    
                     transcribedText += transcript + "\n";
+                    numFillerWords = this.WordCount(transcribedText)
                     console.log(transcribedText)
-
                 }
             }
         }
