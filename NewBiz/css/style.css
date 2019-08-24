@@ -50,7 +50,7 @@ h6 {
 .back-to-top {
   position: fixed;
   display: none;
-  background: #007bff;
+  background: #FFC045;
   color: #fff;
   width: 44px;
   height: 44px;
@@ -159,7 +159,7 @@ h6 {
 #header .logo img {
   padding: 0;
   margin: 7px 0;
-  max-height: 26px;
+  max-height: 50px;
 }
 
 .main-pages {
@@ -196,7 +196,7 @@ h6 {
 }
 
 #intro .intro-info h2 span {
-  color: #74b5fc;
+  color: #FFC045;
   text-decoration: underline;
 }
 
@@ -274,7 +274,7 @@ h6 {
 .main-nav a:hover,
 .main-nav .active > a,
 .main-nav li:hover > a {
-  color: #007bff;
+  color: #FFC045;
   text-decoration: none;
 }
 
