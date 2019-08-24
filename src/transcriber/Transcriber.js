@@ -23,6 +23,8 @@ let socketError = false;
 let transcribeException = false;
 var numFillerWords = 0;
 
+var index_words = []
+
 const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah']
 var transcribedText = "";
 
@@ -112,8 +114,15 @@ export default class Transcriber extends Component {
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
                     transcribedText += transcript + "\n";
+
+                    for (var index = 0; index < fillerWords.length; ++index) {
+                        index_words = this.getMatches(fillerWords[index],transcript)
+                        console.log(fillerWords[index])
+                        console.log(transcript)
+                        console.log(index_words)
+                    }
+                    
                     numFillerWords = this.WordCount(transcribedText)
-                    console.log(transcribedText)
                 }
             }
         }
