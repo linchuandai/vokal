@@ -21,7 +21,7 @@ let socket;
 let micStream;
 let socketError = false;
 let transcribeException = false;
-var numFillerWords = 0;
+var numWords = 0;
 
 var index_words = []
 
@@ -37,7 +37,8 @@ export default class Transcriber extends Component {
 
         this.state = {
             start: false,
-            transcribedText: ""
+            transcribedText: "",
+            numWords: numWords
         };
         
         this.PlayPauseClick = this.PlayPauseClick.bind(this);
@@ -95,7 +96,7 @@ export default class Transcriber extends Component {
 
     WordCount(str) { 
         return str.split(" ").length;
-      }
+    }
 
     handleEventStreamMessage(messageJson) {
         let results = messageJson.Transcript.Results;
@@ -122,7 +123,8 @@ export default class Transcriber extends Component {
                         console.log(index_words)
                     }
                     
-                    numFillerWords = this.WordCount(transcribedText)
+                    numWords = this.WordCount(transcribedText)
+                    this.setState({ numWords: numWords })
                 }
             }
         }
@@ -267,7 +269,7 @@ export default class Transcriber extends Component {
             <div className="Transcriber">
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
                 <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
-                <div><Statistics start={ this.state.start }/></div>
+                <div><Statistics start={ this.state.start } numWords={ this.state.numWords }/></div>
                 <div><TextandFeedback transcribedText={ this.state.transcribedText }/></div>
             </div>
         );

@@ -9,14 +9,12 @@ class Statistics extends Component {
         this.state = {
             start: this.props.start,
             time: 0,
-            totalWords: 0,
+            totalWords: this.props.numWords,
             fillerWords: 0
         };
 
-        this.startTimer = this.startTimer.bind(this);
-
         if (this.state.start) {
-            this.startTimer();
+            // this.startTimer();
         }
     }
 
@@ -27,14 +25,15 @@ class Statistics extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        // Typical usage (don't forget to compare props):
-        if (this.props.start) {
-            this.timer = setInterval(() => this.setState({
-                time: this.state.time + 1
-            }), 1)
-        } else {
-            this.state.time = 0;
-        }
+        // if (this.props.start) {
+            // this.startTimer();
+        // } else {
+            // this.setState({
+            //     time: 0    
+            // })
+            // clearInterval(this.timer)
+        // }
+        this.setState({ numWords: this.props.numWords })
     }
       
 
@@ -43,7 +42,7 @@ class Statistics extends Component {
 
         const items = [];
 
-        const timeInSeconds = Math.round(this.state.time/400);
+        const timeInSeconds = Math.round(this.state.time);
         const wordsPerMinute = Math.round(this.state.totalWords/(this.state.time/60)) || 0;
 
         var data = [timeInSeconds, this.state.totalWords, wordsPerMinute, this.state.fillerWords, 16]
