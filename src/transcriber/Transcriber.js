@@ -84,16 +84,15 @@ export default class Transcriber extends Component {
                 transcript = decodeURIComponent(escape(transcript));
     
                 // update the textarea with the latest result
-                transcribedText = transcribedText + transcript + "\n";
-                console.log(transcribedText)
-                this.setState({ start: true, transcribedText })
+                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n" })
     
                 // if this transcript segment is final, add it to the overall transcription
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
     
                     transcribedText += transcript + "\n";
-                    
+                    console.log(transcribedText)
+
                 }
             }
         }

@@ -44,7 +44,7 @@ class Statistics extends Component {
         const items = [];
 
         const timeInSeconds = Math.round(this.state.time/400);
-        const wordsPerMinute = Math.round(this.state.totalWords/(this.state.time/60));
+        const wordsPerMinute = Math.round(this.state.totalWords/(this.state.time/60)) || 0;
 
         var data = [timeInSeconds, this.state.totalWords, wordsPerMinute, this.state.fillerWords, 16]
 
