@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
 
-var transcribedText = "This is the component for transcribed text. Yes it is This is the component for transcribed text. Yesx";
-
 class TexttoSpeech extends Component {
 
     constructor(props) {
-        super();
+        super(props);
 
         this.state = {
-            transcribedText: transcribedText
-        };
+            transcribedText: this.props.transcribedText
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        try {
+            if (this.props.transcribedText != this.prevProps.transcribedText ) {
+                this.setState({ transcribedText: this.props.transcribedText })
+            }    
+        } catch(error) {
+            console.log(error);
+        }
     }
 
     render() {

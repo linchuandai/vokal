@@ -7,8 +7,6 @@ class Feedback extends Component {
     }
 
     render() {
-
-
         return (
             <div>
                 <FeedbackCard />
