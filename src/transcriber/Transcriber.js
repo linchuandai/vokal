@@ -3,6 +3,9 @@ import CTA from './cta/CTA';
 import Statistics from './statistics/Statistics'
 import TextandFeedback from "./textandfeedback/TextandFeedback";
 import "./Transcriber.css"
+import * as AWS from 'aws-sdk';
+import Comprehend from 'aws-sdk/clients/comprehend';
+const comprehend = new Comprehend();
 
 const audioUtils        = require('./audioUtils');  // for encoding audio data as PCM
 const crypto            = require('crypto'); // tot sign our pre-signed URL
@@ -22,10 +25,12 @@ let micStream;
 let socketError = false;
 let transcribeException = false;
 var totalWords = 0;
+var numFillerWords = 0;
+var fillerWordsFound = [];
 
-var index_words = []
+var index_words = [];
 
-const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah']
+const fillerWords = ['um', 'umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah'];
 var transcribedText = "";
 
 // functions to do the CTAs and AWS API calls 
@@ -38,7 +43,9 @@ export default class Transcriber extends Component {
         this.state = {
             start: false,
             transcribedText: "",
-            totalWords: totalWords
+            totalWords: totalWords,
+            fillerWordsFound: fillerWordsFound,
+            numFillerWords: numFillerWords
         };
         
         this.PlayPauseClick = this.PlayPauseClick.bind(this);
@@ -57,6 +64,7 @@ export default class Transcriber extends Component {
         while ((index = str.indexOf(searchStr, ind)) > -1) {
              matches.push(index);
              ind = index + searchStrL;
+             fillerWordsFound.push(searchStr)
         }
         return matches;
     }
@@ -110,7 +118,7 @@ export default class Transcriber extends Component {
     
                 // update the textarea with the latest result
                 totalWords = this.WordCount(transcribedText + transcript)
-                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n", totalWords: totalWords })
+                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n", totalWords: totalWords, numFillerWords: fillerWordsFound.length, fillerWordsFound: fillerWordsFound })
                 console.log(this.state)
 
                 // if this transcript segment is final, add it to the overall transcription
@@ -121,8 +129,25 @@ export default class Transcriber extends Component {
                     for (var index = 0; index < fillerWords.length; ++index) {
                         index_words = this.getMatches(fillerWords[index],transcript)
                     }
-                                    }
+                }
+                console.log(fillerWords[index])
+                console.log(transcript)
+                console.log(index_words)
+                numFillerWords = fillerWordsFound.length
+                console.log('numfillerswords', numFillerWords)
             }
+/*
+                    var params = {
+                        LanguageCode: 'en',
+                        Text: transcribedText
+                      };
+                      comprehend.detectSentiment(params, function(err, data) {
+                        if (err) console.log(err, err.stack); // an error occurred
+                        else     console.log(data);           // successful response
+                      });
+                    */
+            totalWords = this.WordCount(transcribedText)
+            this.setState({ totalWords: totalWords })
         }
     }
 
@@ -267,10 +292,9 @@ export default class Transcriber extends Component {
             <div className="Transcriber">
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
                 <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
-                <div><Statistics start={ this.state.start } totalWords={ this.state.totalWords }/></div>
-                <div><TextandFeedback transcribedText={ this.state.transcribedText }/></div>
+                <div><Statistics start={ this.state.start } totalWords={ this.state.totalWords } numFillerWords={ this.state.numFillerWords } /></div>
+                <div><TextandFeedback transcribedText={ this.state.transcribedText } fillerWordsFound={ this.state.fillerWordsFound }/></div>
             </div>
         );
     }
-
 }
