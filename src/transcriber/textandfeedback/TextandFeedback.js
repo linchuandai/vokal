@@ -8,12 +8,13 @@ class TextandFeedback extends Component {
         super(props);
 
         this.state = {
-            transcribedText: this.props.transcribedText
+            transcribedText: this.props.transcribedText,
+            fillerWordsFound: this.props.fillerWordsFound
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ transcribedText: nextProps.transcribedText });  
+        this.setState({ transcribedText: nextProps.transcribedText, fillerWordsFound: nextProps.fillerWordsFound });  
     }
       
 
@@ -36,7 +37,7 @@ class TextandFeedback extends Component {
                 </div>
                 <div className="Feedback">
                     <div className="HeaderText">Analysis</div>
-                    <Feedback />
+                    <Feedback fillerWordsFound={ this.state.fillerWordsFound }/>
                 </div>
             </div>
         

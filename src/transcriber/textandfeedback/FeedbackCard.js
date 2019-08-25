@@ -6,7 +6,8 @@ class FeedbackCard extends Component {
         super(props);
 
         this.state = {
-            hover: false
+            hover: false,
+            filterWordFound: this.props.filterWordFound
         }
 
         this.hoverOff = this.hoverOff.bind(this);
@@ -24,8 +25,7 @@ class FeedbackCard extends Component {
     render() {
         return (
             <div className={ this.state.hover ? "Test" : "FeedbackCard"} onMouseEnter={ this.hoverOn } onMouseLeave={ this.hoverOff } >
-                <p1>Filter Word</p1>
-                <p1>Occured at 1:40</p1>
+                <p1>Filler Word { this.state.filterWordFound }</p1>
             </div>
         );
     }

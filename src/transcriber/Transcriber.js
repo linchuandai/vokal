@@ -4,6 +4,15 @@ import Statistics from './statistics/Statistics'
 import TextandFeedback from "./textandfeedback/TextandFeedback";
 import "./Transcriber.css"
 import logo from './img/vokal.svg';
+import * as AWS from 'aws-sdk';
+import Comprehend from 'aws-sdk/clients/comprehend';
+
+AWS.config.accessKeyId = 'AKIAJ5WYTSMRY4DOFK7A'
+AWS.config.secretAccessKey = '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'
+const comprehend = new Comprehend({region: "us-east-1"});
+
+
+// 57b6d6da9c0fe319cefc0f6f64f7ab80fe8cde33
 
 const audioUtils        = require('./audioUtils');  // for encoding audio data as PCM
 const crypto            = require('crypto'); // tot sign our pre-signed URL
@@ -22,11 +31,15 @@ let socket;
 let micStream;
 let socketError = false;
 let transcribeException = false;
-var numWords = 0;
+var totalWords = 0;
+var numFillerWords = 0;
+var fillerWordsFound = [];
 
-var index_words = []
+var emotion = '';
 
-const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah']
+var index_words = [];
+
+const fillerWords = ['um', 'umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah'];
 var transcribedText = "";
 
 // functions to do the CTAs and AWS API calls 
@@ -39,7 +52,10 @@ export default class Transcriber extends Component {
         this.state = {
             start: false,
             transcribedText: "",
-            numWords: numWords
+            totalWords: totalWords,
+            fillerWordsFound: fillerWordsFound,
+            numFillerWords: numFillerWords,
+            emotion: emotion
         };
         
         this.PlayPauseClick = this.PlayPauseClick.bind(this);
@@ -58,6 +74,9 @@ export default class Transcriber extends Component {
         while ((index = str.indexOf(searchStr, ind)) > -1) {
              matches.push(index);
              ind = index + searchStrL;
+             var timeInSec = window.lastTime / 1000
+             fillerWordsFound.push(searchStr + " [" + timeInSec + "]")
+             console.log(timeInSec)
         }
         return matches;
     }
@@ -110,8 +129,10 @@ export default class Transcriber extends Component {
                 transcript = decodeURIComponent(escape(transcript));
     
                 // update the textarea with the latest result
-                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n" })
-    
+                totalWords = this.WordCount(transcribedText + transcript)
+                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n", totalWords: totalWords, numFillerWords: fillerWordsFound.length, fillerWordsFound: fillerWordsFound, emotion:emotion })
+                console.log(this.state)
+
                 // if this transcript segment is final, add it to the overall transcription
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
@@ -119,15 +140,33 @@ export default class Transcriber extends Component {
 
                     for (var index = 0; index < fillerWords.length; ++index) {
                         index_words = this.getMatches(fillerWords[index],transcript)
-                        console.log(fillerWords[index])
-                        console.log(transcript)
-                        console.log(index_words)
+                    }
+                }
+                console.log(fillerWords[index])
+                console.log(transcript)
+                console.log(index_words)
+                numFillerWords = fillerWordsFound.length
+                console.log('numfillerswords', numFillerWords)
+            }
+                if (transcribedText != '') {
+                    var params = {
+                        LanguageCode: 'en',
+                        Text: transcribedText
+                      };
+                      comprehend.detectSentiment(params, function(err, data) {
+                        if (err) {
+                            console.log(err, err.stack); // an error occurred
+                        }
+                        else {
+                            emotion = data['Sentiment'];
+                            console.log(data['Sentiment']);           // successful response
+                        }
+                      });
                     }
                     
-                    numWords = this.WordCount(transcribedText)
-                    this.setState({ numWords: numWords })
-                }
-            }
+            totalWords = this.WordCount(transcribedText)
+            this.setState({ totalWords: totalWords })
+            this.setState({ emotion: emotion })
         }
     }
 
@@ -137,7 +176,7 @@ export default class Transcriber extends Component {
             //convert the binary event stream message to JSON
             let messageWrapper = eventStreamMarshaller.unmarshall(Buffer(message.data));
             let messageBody = JSON.parse(String.fromCharCode.apply(String, messageWrapper.body));
-            console.log(messageBody)
+            // console.log(messageBody)
             if (messageWrapper.headers[":message-type"].value === "event") {
                 this.handleEventStreamMessage(messageBody);
             }
@@ -247,15 +286,18 @@ export default class Transcriber extends Component {
             this.startGettingTranscription();
         } else {
             this.setState( { start: false, transcribedText: transcribedText } )
-
-            if (socket.OPEN) {
-                micStream.stop();
-        
-                // Send an empty frame so that Transcribe initiates a closure of the WebSocket after submitting all transcripts
-                let emptyMessage = this.getAudioEventMessage(Buffer.from(new Buffer([])));
-                let emptyBuffer = eventStreamMarshaller.marshall(emptyMessage);
-                socket.send(emptyBuffer);
-            }        
+            try {
+                if (socket.OPEN) {
+                    micStream.stop();
+            
+                    // Send an empty frame so that Transcribe initiates a closure of the WebSocket after submitting all transcripts
+                    let emptyMessage = this.getAudioEventMessage(Buffer.from(new Buffer([])));
+                    let emptyBuffer = eventStreamMarshaller.marshall(emptyMessage);
+                    socket.send(emptyBuffer);
+                }            
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
@@ -264,17 +306,15 @@ export default class Transcriber extends Component {
         this.setState( { start: this.state.start, transcribedText: transcribedText } )
     }
 
-
     render() {
         return(
             <div className="Transcriber">
                 <img src={logo}></img>
-                <div class="PresentationTitle">Hack the 6ix Presentation</div>
+                <div class="PresentationTitle">✎ Hack the 6ix Presentation</div>
                 <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
-                <div><Statistics start={ this.state.start } numWords={ this.state.numWords }/></div>
-                <div><TextandFeedback transcribedText={ this.state.transcribedText }/></div>
+                <div><Statistics start={ this.state.start } totalWords={ this.state.totalWords } numFillerWords={ this.state.numFillerWords } emotion={this.state.emotion}/></div>
+                <div><TextandFeedback transcribedText={ this.state.transcribedText } fillerWordsFound={ this.state.fillerWordsFound }/></div>
             </div>
         );
     }
-
 }
