@@ -262,15 +262,18 @@ export default class Transcriber extends Component {
             this.startGettingTranscription();
         } else {
             this.setState( { start: false, transcribedText: transcribedText } )
-
-            if (socket.OPEN) {
-                micStream.stop();
-        
-                // Send an empty frame so that Transcribe initiates a closure of the WebSocket after submitting all transcripts
-                let emptyMessage = this.getAudioEventMessage(Buffer.from(new Buffer([])));
-                let emptyBuffer = eventStreamMarshaller.marshall(emptyMessage);
-                socket.send(emptyBuffer);
-            }        
+            try {
+                if (socket.OPEN) {
+                    micStream.stop();
+            
+                    // Send an empty frame so that Transcribe initiates a closure of the WebSocket after submitting all transcripts
+                    let emptyMessage = this.getAudioEventMessage(Buffer.from(new Buffer([])));
+                    let emptyBuffer = eventStreamMarshaller.marshall(emptyMessage);
+                    socket.send(emptyBuffer);
+                }            
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 

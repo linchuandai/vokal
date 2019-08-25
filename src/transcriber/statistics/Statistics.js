@@ -10,51 +10,55 @@ class Statistics extends Component {
             start: this.props.start,
             time: 0,
             totalWords: this.props.numWords,
-            fillerWords: 0
+            fillerWords: 0,
+            startTime: new Date()
         };
 
         if (this.state.start) {
-            // this.startTimer();
+            this.startTimer();
         }
     }
 
     startTimer() {
-        this.timer = setInterval(() => this.setState({
-            time: this.state.time + 1
-        }), 1)
+        this.timer = setInterval(() => {
+            console.log('tick')
+            this.setState({
+                time: this.state.time + 300
+            })
+        }, 300)
     }
 
-    componentDidUpdate(prevProps) {
-        // if (this.props.start) {
-            // this.startTimer();
-        // } else {
-            // this.setState({
-            //     time: 0    
-            // })
-            // clearInterval(this.timer)
-        // }
+    componentDidMount(prevProps) {
+        if (this.props.start) {
+            this.startTimer();
+        } else {
+            this.setState({
+                time: 0
+            })
+            clearInterval(this.timer)
+        }
         this.setState({ numWords: this.props.numWords })
     }
-      
+
 
     render() {
-        const titles = ["Timer", "Word Count", "Words per Minute", "Filler World Count", "Sound Level"];
+        const titles = ["Timer", "Word Count", "Words per Minute", "Filler Word Count", "Sound Level"];
 
         const items = [];
 
-        const timeInSeconds = Math.round(this.state.time);
-        const wordsPerMinute = Math.round(this.state.totalWords/(this.state.time/60)) || 0;
+        const timeInSeconds = Math.round((new Date() - this.state.startTime));
+        const wordsPerMinute = Math.round(this.state.totalWords / (this.state.time / 60)) || 0;
 
-        var data = [timeInSeconds, this.state.totalWords, wordsPerMinute, this.state.fillerWords, 16]
+        var data = [timeInSeconds, this.state.totalWords, wordsPerMinute, this.state.fillerWords, 0]
 
         for (const [index, value] of titles.entries()) {
-          items.push(<StatisticsBox title={ value } data={ data[index] } />)
+            items.push(<StatisticsBox title={value} data={data[index]} />)
         }
-      
-      
+
+
         return (
             <div className="Statistics">
-                { items }
+                {items}
             </div>
         );
     }
