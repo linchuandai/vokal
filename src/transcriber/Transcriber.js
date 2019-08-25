@@ -5,7 +5,12 @@ import TextandFeedback from "./textandfeedback/TextandFeedback";
 import "./Transcriber.css"
 import * as AWS from 'aws-sdk';
 import Comprehend from 'aws-sdk/clients/comprehend';
-const comprehend = new Comprehend();
+
+AWS.config.accessKeyId = 'AKIAJ5WYTSMRY4DOFK7A'
+AWS.config.secretAccessKey = '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'
+const comprehend = new Comprehend({region: "us-east-1"});
+
+
 
 const audioUtils        = require('./audioUtils');  // for encoding audio data as PCM
 const crypto            = require('crypto'); // tot sign our pre-signed URL
@@ -64,7 +69,9 @@ export default class Transcriber extends Component {
         while ((index = str.indexOf(searchStr, ind)) > -1) {
              matches.push(index);
              ind = index + searchStrL;
-             fillerWordsFound.push(searchStr)
+             var timeInSec = window.lastTime / 1000
+             fillerWordsFound.push(searchStr + " [" + timeInSec + "]")
+             console.log(timeInSec)
         }
         return matches;
     }
@@ -136,7 +143,7 @@ export default class Transcriber extends Component {
                 numFillerWords = fillerWordsFound.length
                 console.log('numfillerswords', numFillerWords)
             }
-/*
+
                     var params = {
                         LanguageCode: 'en',
                         Text: transcribedText
@@ -145,7 +152,7 @@ export default class Transcriber extends Component {
                         if (err) console.log(err, err.stack); // an error occurred
                         else     console.log(data);           // successful response
                       });
-                    */
+                    
             totalWords = this.WordCount(transcribedText)
             this.setState({ totalWords: totalWords })
         }

@@ -33,6 +33,7 @@ class Statistics extends Component {
             this.setState({
                 time: this.state.time + 300
             })
+            window.lastTime = this.state.time
         }, 300)
     }
 /*
