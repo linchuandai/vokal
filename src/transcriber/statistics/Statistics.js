@@ -11,7 +11,8 @@ class Statistics extends Component {
             start: this.props.start,
             time: 0,
             totalWords: this.props.totalWords,
-            numFillerWords: this.props.numFillerWords
+            numFillerWords: this.props.numFillerWords,
+            emotion: this.props.emotion
         };
 
         this.isUpdating = false;
@@ -62,21 +63,21 @@ class Statistics extends Component {
                 clearInterval(this.timer)
             }
             console.log(this.state)
-            this.setState({ totalWords: this.props.totalWords, numFillerWords: this.props.numFillerWords })
+            this.setState({ totalWords: this.props.totalWords, numFillerWords: this.props.numFillerWords, emotion:this.props.emotion })
         }
     }
 
 
 
     render() {
-        const titles = ["Timer", "Word Count", "Words per Minute", "Filler Word Count"];
+        const titles = ["Timer", "Word Count", "Words per Minute", "Filler Word Count", "Tone"];
 
         const items = [];
 
         const timeInSeconds = Math.round(this.state.time/1000);
         const wordsPerMinute = Math.round(this.state.totalWords * 60 / timeInSeconds) || 0;
 
-        var data = [timeInSeconds, this.state.totalWords, wordsPerMinute, this.state.numFillerWords]
+        var data = [timeInSeconds, this.state.totalWords, wordsPerMinute, this.state.numFillerWords, this.state.emotion]
 
         for (const [index, value] of titles.entries()) {
             items.push(<StatisticsBox title={value} data={data[index]} />)

@@ -33,6 +33,8 @@ var totalWords = 0;
 var numFillerWords = 0;
 var fillerWordsFound = [];
 
+var emotion = '';
+
 var index_words = [];
 
 const fillerWords = ['um', 'umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah'];
@@ -50,7 +52,8 @@ export default class Transcriber extends Component {
             transcribedText: "",
             totalWords: totalWords,
             fillerWordsFound: fillerWordsFound,
-            numFillerWords: numFillerWords
+            numFillerWords: numFillerWords,
+            emotion: emotion
         };
         
         this.PlayPauseClick = this.PlayPauseClick.bind(this);
@@ -125,7 +128,7 @@ export default class Transcriber extends Component {
     
                 // update the textarea with the latest result
                 totalWords = this.WordCount(transcribedText + transcript)
-                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n", totalWords: totalWords, numFillerWords: fillerWordsFound.length, fillerWordsFound: fillerWordsFound })
+                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n", totalWords: totalWords, numFillerWords: fillerWordsFound.length, fillerWordsFound: fillerWordsFound, emotion:emotion })
                 console.log(this.state)
 
                 // if this transcript segment is final, add it to the overall transcription
@@ -143,18 +146,25 @@ export default class Transcriber extends Component {
                 numFillerWords = fillerWordsFound.length
                 console.log('numfillerswords', numFillerWords)
             }
-
+                if (transcribedText != '') {
                     var params = {
                         LanguageCode: 'en',
                         Text: transcribedText
                       };
                       comprehend.detectSentiment(params, function(err, data) {
-                        if (err) console.log(err, err.stack); // an error occurred
-                        else     console.log(data);           // successful response
+                        if (err) {
+                            console.log(err, err.stack); // an error occurred
+                        }
+                        else {
+                            emotion = data['Sentiment'];
+                            console.log(data['Sentiment']);           // successful response
+                        }
                       });
+                    }
                     
             totalWords = this.WordCount(transcribedText)
             this.setState({ totalWords: totalWords })
+            this.setState({ emotion: emotion })
         }
     }
 
@@ -299,7 +309,7 @@ export default class Transcriber extends Component {
             <div className="Transcriber">
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
                 <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
-                <div><Statistics start={ this.state.start } totalWords={ this.state.totalWords } numFillerWords={ this.state.numFillerWords } /></div>
+                <div><Statistics start={ this.state.start } totalWords={ this.state.totalWords } numFillerWords={ this.state.numFillerWords } emotion={this.state.emotion}/></div>
                 <div><TextandFeedback transcribedText={ this.state.transcribedText } fillerWordsFound={ this.state.fillerWordsFound }/></div>
             </div>
         );
