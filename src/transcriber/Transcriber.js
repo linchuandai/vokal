@@ -3,6 +3,9 @@ import CTA from './cta/CTA';
 import Statistics from './statistics/Statistics'
 import TextandFeedback from "./textandfeedback/TextandFeedback";
 import "./Transcriber.css"
+import * as AWS from 'aws-sdk';
+import Comprehend from 'aws-sdk/clients/comprehend';
+const comprehend = new Comprehend();
 
 const audioUtils        = require('./audioUtils');  // for encoding audio data as PCM
 const crypto            = require('crypto'); // tot sign our pre-signed URL
@@ -22,10 +25,12 @@ let micStream;
 let socketError = false;
 let transcribeException = false;
 var numWords = 0;
+var numFillerWords = 0;
+var fillerWordsFound = [];
 
-var index_words = []
+var index_words = [];
 
-const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah']
+const fillerWords = ['umm','wow','I mean','literally','basically','hmmm','absolutely','totally','well','like','ah'];
 var transcribedText = "";
 
 // functions to do the CTAs and AWS API calls 
@@ -57,6 +62,7 @@ export default class Transcriber extends Component {
         while ((index = str.indexOf(searchStr, ind)) > -1) {
              matches.push(index);
              ind = index + searchStrL;
+             fillerWordsFound.push(searchStr)
         }
         return matches;
     }
@@ -121,7 +127,17 @@ export default class Transcriber extends Component {
                         console.log(fillerWords[index])
                         console.log(transcript)
                         console.log(index_words)
+                        numFillerWords=index_words.length
                     }
+
+                    var params = {
+                        LanguageCode: 'en', /* required */
+                        Text: transcribedText /* required */
+                      };
+                      comprehend.detectSentiment(params, function(err, data) {
+                        if (err) console.log(err, err.stack); // an error occurred
+                        else     console.log(data);           // successful response
+                      });
                     
                     numWords = this.WordCount(transcribedText)
                     this.setState({ numWords: numWords })
