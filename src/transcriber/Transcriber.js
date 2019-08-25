@@ -21,7 +21,7 @@ let socket;
 let micStream;
 let socketError = false;
 let transcribeException = false;
-var numWords = 0;
+var totalWords = 0;
 
 var index_words = []
 
@@ -38,7 +38,7 @@ export default class Transcriber extends Component {
         this.state = {
             start: false,
             transcribedText: "",
-            numWords: numWords
+            totalWords: totalWords
         };
         
         this.PlayPauseClick = this.PlayPauseClick.bind(this);
@@ -109,8 +109,10 @@ export default class Transcriber extends Component {
                 transcript = decodeURIComponent(escape(transcript));
     
                 // update the textarea with the latest result
-                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n" })
-    
+                totalWords = this.WordCount(transcribedText + transcript)
+                this.setState({ start: true, transcribedText: transcribedText + transcript + "\n", totalWords: totalWords })
+                console.log(this.state)
+
                 // if this transcript segment is final, add it to the overall transcription
                 if (!results[0].IsPartial) {
                     //scroll the textarea down
@@ -118,14 +120,8 @@ export default class Transcriber extends Component {
 
                     for (var index = 0; index < fillerWords.length; ++index) {
                         index_words = this.getMatches(fillerWords[index],transcript)
-                        console.log(fillerWords[index])
-                        console.log(transcript)
-                        console.log(index_words)
                     }
-                    
-                    numWords = this.WordCount(transcribedText)
-                    this.setState({ numWords: numWords })
-                }
+                                    }
             }
         }
     }
@@ -136,7 +132,7 @@ export default class Transcriber extends Component {
             //convert the binary event stream message to JSON
             let messageWrapper = eventStreamMarshaller.unmarshall(Buffer(message.data));
             let messageBody = JSON.parse(String.fromCharCode.apply(String, messageWrapper.body));
-            console.log(messageBody)
+            // console.log(messageBody)
             if (messageWrapper.headers[":message-type"].value === "event") {
                 this.handleEventStreamMessage(messageBody);
             }
@@ -266,13 +262,12 @@ export default class Transcriber extends Component {
         this.setState( { start: this.state.start, transcribedText: transcribedText } )
     }
 
-
     render() {
         return(
             <div className="Transcriber">
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
                 <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
-                <div><Statistics start={ this.state.start } numWords={ this.state.numWords }/></div>
+                <div><Statistics start={ this.state.start } totalWords={ this.state.totalWords }/></div>
                 <div><TextandFeedback transcribedText={ this.state.transcribedText }/></div>
             </div>
         );
