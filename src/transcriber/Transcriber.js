@@ -3,6 +3,7 @@ import CTA from './cta/CTA';
 import Statistics from './statistics/Statistics'
 import TextandFeedback from "./textandfeedback/TextandFeedback";
 import "./Transcriber.css"
+import logo from './img/vokal.svg';
 
 const audioUtils        = require('./audioUtils');  // for encoding audio data as PCM
 const crypto            = require('crypto'); // tot sign our pre-signed URL
@@ -267,6 +268,7 @@ export default class Transcriber extends Component {
     render() {
         return(
             <div className="Transcriber">
+                <img src={logo}></img>
                 <div class="PresentationTitle">Hack the 6ix Presentation</div>
                 <div><CTA PlayPauseClick={ this.PlayPauseClick } ResetClick={ this.ResetClick }/></div>
                 <div><Statistics start={ this.state.start } numWords={ this.state.numWords }/></div>
